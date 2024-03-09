@@ -1,4 +1,4 @@
 myenv
 __pycache__
-backups/*
+backups/*.sql
 .env*
