@@ -39,6 +39,15 @@ MAIL_SUBJECT_ERROR="DB backup error"
 MAIL_BODY_ERROR="Database backup failed for  production"
 ```
 
+## Run locally
+
+```sh
+python3 -m venv myenv
+source myenv/bin/activate
+pip install -r requirements.txt
+python3 mysql_backup.py 
+```
+
 ## Deploy to Google Cloud
 
 Run gcloud run deploy script
@@ -46,6 +55,16 @@ Run gcloud run deploy script
 ```sh
 sh ./scripts/gcloud-build.sh
 ```
+
+1) Go to Google Cloud Run dashboard and add a new "Cloud Run Job". 
+
+2) Choose the mysql-backup docker image. 
+
+3) Add the env vars and secrets 
+
+4) Set the cron schedule. eg: `0 */1 * * *` to run hourly
+
+5) Run it to test
 
 ## Deploy elsewhere
 
