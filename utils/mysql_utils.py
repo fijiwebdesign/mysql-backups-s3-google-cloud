@@ -2,6 +2,9 @@
 import subprocess
 from urllib.parse import urlparse, parse_qs
 
+# Specify the full path to mysqldump
+mysqldump_path = '/usr/bin/mysqldump'
+
 def mysqldump_from_url(url, output_file):
     # Parse the connection URL string
     parsed_url = urlparse(url)
@@ -16,7 +19,7 @@ def mysqldump_from_url(url, output_file):
 
     # Build mysqldump command
     mysqldump_cmd = [
-        'mysqldump',
+        mysqldump_path,
         '-h', host,
         '-P', str(port),
         '-u', username,
