@@ -22,7 +22,7 @@ def main():
         
         
         # Get output file name from environment variable or default to "backup.sql"
-        output_file = os.getenv('BACKUP_FILE', f"backups/db-bk-{current_date}.sql")
+        output_file = os.getenv('BACKUP_FILE', f"db-bk-{current_date}.sql")
 
         print(f"Creating backup to {output_file}")
         mysqldump_from_url(db_url, output_file)
