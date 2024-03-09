@@ -9,6 +9,7 @@ COPY mysql_backup.py .
 COPY utils utils/
 # https://stackoverflow.com/questions/70295661/copy-directory-into-docker-build-no-matter-if-empty-or-not-fails-on-copy-fail
 COPY backups/. /backups/
+RUN chmod a+rwx -R /backups
 COPY requirements.txt .
 
 # Install dependencies
