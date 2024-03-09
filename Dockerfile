@@ -11,8 +11,8 @@ COPY backups backups/
 RUN chmod a+rwx -R backups
 COPY requirements.txt .
 
-RUN sudo apt-get update
-RUN sudo apt-get install mysql-client
+RUN apt-get update
+RUN apt-get install mysql-client
 
 # Install dependencies
 RUN pip install -r requirements.txt
