@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy the Python script and the utils directory into the container
 COPY mysql_backup.py .
 COPY utils utils/
-copy backups ./backups/
+COPY backups backups/
 COPY requirements.txt .
 
 # Install dependencies
