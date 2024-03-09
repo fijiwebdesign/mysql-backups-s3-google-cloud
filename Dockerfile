@@ -7,6 +7,7 @@ WORKDIR /app
 # Copy the Python script and the utils directory into the container
 COPY mysql_backup.py .
 COPY utils utils/
+# https://stackoverflow.com/questions/70295661/copy-directory-into-docker-build-no-matter-if-empty-or-not-fails-on-copy-fail
 COPY backups/. /backups/
 COPY requirements.txt .
 
