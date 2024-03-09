@@ -7,7 +7,7 @@ from utils.mysql_utils import mysqldump_from_url
 from utils.s3_utils import upload_to_s3
 from utils.gcs_utils import upload_to_gcs
 from datetime import datetime
-
+from utils.resend_utils import resend_send_email
 
 def main():
     # Load environment variables from .env file
@@ -17,9 +17,7 @@ def main():
     db_url = os.getenv('DATABASE_URL')
 
     if db_url:
-      
         current_date = datetime.now().strftime("%Y-%m-%d")
-        
         
         # Get output file name from environment variable or default to "backup.sql"
         output_file = os.getenv('BACKUP_FILE', f"/tmp/db-bk-{current_date}.sql")
@@ -32,30 +30,42 @@ def main():
         s3_bucket_name = os.getenv('S3_BUCKET_NAME')
         gcs_bucket_name = os.getenv('GCS_BUCKET_NAME')
 
-        
-
+        # Upload to S3 if bucket name is provided
         if s3_bucket_name:
-            # Upload the file to S3
-            # @todo and show progress
-            upload_to_s3(
-              output_file, 
-              s3_bucket_name,
-              object_name=f"db-bk-{current_date}.sql",
-            )
+            try:
+                upload_to_s3(
+                    output_file, 
+                    s3_bucket_name,
+                    object_name=f"db-bk-{current_date}.sql",
+                )
+            except Exception as e:
+                send_error_email('S3 upload failed', str(e))
 
+        # Upload to GCS if bucket name is provided
         if gcs_bucket_name:
-            # Upload the file to GCS 
-            # @todo progress
-            upload_to_gcs(
-              output_file,
-              gcs_bucket_name, 
-              object_name=f"db-bk-{current_date}.sql",
-            )
+            try:
+                upload_to_gcs(
+                    output_file,
+                    gcs_bucket_name, 
+                    object_name=f"db-bk-{current_date}.sql",
+                )
+            except Exception as e:
+                send_error_email('GCS upload failed', str(e))
 
+        # If neither S3 nor GCS bucket name is provided, send error email
         if not s3_bucket_name and not gcs_bucket_name:
-            print("Error: Neither S3_BUCKET_NAME nor GCS_BUCKET_NAME environment variables found.")
+            send_error_email('No storage bucket provided', 'Neither S3_BUCKET_NAME nor GCS_BUCKET_NAME environment variables found.')
     else:
-        print("Error: DATABASE_URL environment variable not found.")
+        send_error_email('No database URL provided', 'DATABASE_URL environment variable not found.')
 
+def send_error_email(subject, body):
+    
+    # Example usage of resend_send_email function
+    from_email = os.getenv('MAIL_FROM')
+    to_email = os.getenv('MAIL_TO')
+    subject = os.getenv('MAIL_SUBJECT_ERROR')
+    body = os.getenv('MAIL_BODY_ERROR')
+    resend_send_email(from_email, to_email, subject, body)
+    
 if __name__ == "__main__":
     main()
