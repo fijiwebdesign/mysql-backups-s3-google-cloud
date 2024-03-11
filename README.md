@@ -20,6 +20,7 @@ DATABASE_URL=mysql://user:pass@localhost:3306/db_name
 
 # create this from s3 console
 # this example uses vultr which is compatible to S3 but much cheaper
+# https://www.vultr.com/pricing/
 S3_BUCKET_NAME=mysql-backups # auto created
 S3_ENDPOINT_URL=https://sgp1.vultrobjects.com
 S3_ACCESS_KEY=s3-key-xyz
@@ -30,8 +31,10 @@ S3_REGION=sg
 GOOGLE_APPLICATION_CREDENTIALS=../project-224203-f34812eb7d22.json
 GCS_BUCKET_NAME=mysql-backups # auto created
 
-MAIL_FROM=gabe@fijiwebdesign.com
-MAIL_TO=gabe@fijiwebdesign.com
+# use https://resend.com/ to send emails
+RESEND_API_KEY=your-api-key
+MAIL_FROM=email@domain.com
+MAIL_TO=email@domain.com
 MAIL_SUBJECT_ERROR="DB backup error"
 MAIL_BODY_ERROR="Database backup failed for  production"
 ```
