@@ -1,9 +1,10 @@
 # mysql_utils.py
 import subprocess
+import shutil
 from urllib.parse import urlparse, parse_qs
 
 # Specify the full path to mysqldump
-mysqldump_path = '/usr/bin/mysqldump'
+mysqldump_path = shutil.which('mysqldump') or '/usr/bin/mysqldump'
 
 def mysqldump_from_url(url, output_file):
     # Parse the connection URL string

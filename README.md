@@ -28,8 +28,13 @@ S3_SECRET_KEY=***
 S3_REGION=sg
 
 # create this from google cloud console
-GOOGLE_APPLICATION_CREDENTIALS=../project-224203-f34812eb7d22.json
+GOOGLE_APPLICATION_CREDENTIALS=secrets/project-224203-f34812eb7d22.json
 GCS_BUCKET_NAME=mysql-backups # auto created
+
+# instead of a file you can use a json string
+# make sure it is one line
+# use sh scripts/gcloud-json2string.sh secrets/file-name.json create string
+# GOOGLE_APPLICATION_CREDENTIALS_JSON={...}
 
 # use https://resend.com/ to send emails
 RESEND_API_KEY=your-api-key
@@ -57,6 +62,10 @@ sh ./scripts/python-env-install.sh
 ## Deploy to Google Cloud
 
 Run gcloud run docker deploy script to build a docker image and push it to gcr.io/$PROJECT_ID/mysql-backup then deploy this image
+
+The build does not includ the `.env` file and `secrets/` folder for security. 
+
+You have to supply the env variables to your build using the google cloud UI or the yaml file after you create the cloud run job. 
 
 ```sh
 sh ./scripts/gcloud-deploy-docker.sh
@@ -86,9 +95,50 @@ Follow instructions below to setup the Cloud run job which acts similar to a cro
 
 3) Add the env vars and secrets 
 
+To get the `GOOGLE_APPLICATION_CREDENTIALS_JSON` env var use
+```
+sh scripts/gcloud-json2string.sh secrets/file-name.json
+```
+
+The other env vars can be added via the YAML tab. 
+Add it after the `containers: -image`. 
+
+```yaml
+ containers:
+          - image: gcr.io/x-catwalk-224203/mysql-backup@sha256:8d230341ec262f43ac7e20877a7672d5f6d7da4f4178460d255864ac8f9b7362
+            env:
+            - name: DATABASE_URL
+              value: mysql://root:passB@monorail.proxy.rlwy.net:40790/railway
+            - name: S3_BUCKET_NAME
+              value: mysql-backup
+            - name: S3_ENDPOINT_URL
+              value: https://sgp1.vultrobjects.com
+            - name: S3_ACCESS_KEY
+              value: ***
+            - name: S3_SECRET_KEY
+              value: ***
+            - name: S3_REGION
+              value: sg
+            - name: GOOGLE_APPLICATION_CREDENTIALS_JSON
+              value: ***
+            - name: GCS_BUCKET_NAME
+              value: treks-db
+            - name: RESEND_API_KEY
+              value: ***
+            - name: MAIL_FROM
+              value: gabe@example.com
+            - name: MAIL_TO
+              value: gabe@example.com
+            - name: MAIL_SUBJECT_ERROR
+              value: Treks db backup error
+            - name: MAIL_BODY_ERROR
+              value: Database backup failed for treks production
+```
+
 4) Set the cron schedule. eg: `0 */1 * * *` to run hourly
 
 5) Run it to test
+
 
 ## Deploy to Railway
 
