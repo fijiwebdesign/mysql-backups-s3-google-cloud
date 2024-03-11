@@ -10,12 +10,6 @@ Clone this repo
 git clone git@github.com:treks-app/mysql-backup.git
 ```
 
-Run install script
-
-```sh
-sh ./scripts/install.sh
-```
-
 ## Usage
 
 Create a `.env` file with the following example:
@@ -24,14 +18,17 @@ Create a `.env` file with the following example:
 
 DATABASE_URL=mysql://user:pass@localhost:3306/db_name
 
-S3_BUCKET_NAME=bucket-name
+# create this from s3 console
+# this example uses vultr which is compatible to S3 but much cheaper
+S3_BUCKET_NAME=mysql-backups # auto created
 S3_ENDPOINT_URL=https://sgp1.vultrobjects.com
-S3_ACCESS_KEY=key
+S3_ACCESS_KEY=s3-key-xyz
 S3_SECRET_KEY=***
 S3_REGION=sg
 
-GOOGLE_APPLICATION_CREDENTIALS=../x-catwalk-224203-f34812eb7d22.json
-GCS_BUCKET_NAME=treks-db
+# create this from google cloud console
+GOOGLE_APPLICATION_CREDENTIALS=../project-224203-f34812eb7d22.json
+GCS_BUCKET_NAME=mysql-backups # auto created
 
 MAIL_FROM=gabe@fijiwebdesign.com
 MAIL_TO=gabe@fijiwebdesign.com
@@ -46,6 +43,12 @@ python3 -m venv myenv
 source myenv/bin/activate
 pip install -r requirements.txt
 python3 mysql_backup.py 
+```
+
+Or run install script (runs commands above)
+
+```sh
+sh ./scripts/python-env-install.sh
 ```
 
 ## Deploy to Google Cloud
