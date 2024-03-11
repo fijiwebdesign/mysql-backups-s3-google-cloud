@@ -50,11 +50,29 @@ python3 mysql_backup.py
 
 ## Deploy to Google Cloud
 
-Run gcloud run deploy script
+Run gcloud run docker deploy script to build a docker image and push it to gcr.io/$PROJECT_ID/mysql-backup then deploy this image
 
 ```sh
-sh ./scripts/gcloud-build.sh
+sh ./scripts/gcloud-deploy-docker.sh
 ```
+
+Alternatively you can deploy the source code and have gcloud run build the image
+
+```sh
+sh ./scripts/gcloud-deploy-source.sh
+```
+
+Note that you will receive an error 
+
+```
+ERROR: (gcloud.run.deploy) Revision 'mysql-backup-00004-rlz' is not ready and cannot serve traffic. The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable. Logs for this revision might contain more information.
+```
+
+Ignore this error as we are not trying to deploy it as a HTTP server. 
+
+Follow instructions below to setup the Cloud run job which acts similar to a cron job. 
+
+## Setup Google Cloud Run Job (cron job)
 
 1) Go to Google Cloud Run dashboard and add a new "Cloud Run Job". 
 
@@ -66,12 +84,17 @@ sh ./scripts/gcloud-build.sh
 
 5) Run it to test
 
+## Deploy to Railway
+
+1) Log into Railway and create a new project
+2) Connect Railway to your github account
+3) Create a new service from the github repository
+4) In the new railway service settings set the Cron Schedule to something like `0 */1 * * *` (every hour)
+
 ## Deploy elsewhere
 
 Deploy to any devops based deployment by pointing it to the git repo. 
 It will pickup the `Dockerfile` and build it.
-
-Railway.app is very easy to deploy to
 
 Deploy to any docker container cloud by building the docker image and pushing it. 
 See: `scripts/gcloud-build.sh` for an example
