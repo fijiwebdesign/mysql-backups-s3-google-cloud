@@ -96,12 +96,18 @@ Follow instructions below to setup the Cloud run job which acts similar to a cro
 3) Add the env vars and secrets 
 
 To get the `GOOGLE_APPLICATION_CREDENTIALS_JSON` env var use
-```
+```sh
 sh scripts/gcloud-json2string.sh secrets/file-name.json
 ```
 
 The other env vars can be added via the YAML tab. 
 Add it after the `containers: -image`. 
+
+Generate the yaml structure with: 
+
+```sh
+sh scripts/env2yaml.sh 
+```
 
 ```yaml
  containers:
